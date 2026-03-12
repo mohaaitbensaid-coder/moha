@@ -1434,7 +1434,7 @@ a {
         padding: 50px 15px 20px 15px; /* Added top padding for menu toggle */
     }
 
-    .menu-toggle {
+    body > .menu-toggle {
         display: flex;
         position: fixed;
         top: 15px;
