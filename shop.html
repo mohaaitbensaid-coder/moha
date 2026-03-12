@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الأدوات | HRFA.MA</title>
+    <link rel="icon" type="image/jpeg" href="logo.png.jpeg">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script>
+        // Check Access: Only for Artisans
+        const authUser = JSON.parse(localStorage.getItem('hrfa_user') || 'null');
+        const authToken = localStorage.getItem('hrfa_token');
+        if (!authUser || !authToken || authUser.role !== 'artisan') {
+            alert('عذراً، هذا المتجر خاص بالحرفيين فقط. يرجى تسجيل الدخول كحرفي للوصول.');
+            window.location.href = 'login.html';
+        }
+    </script>
+    <script src="api.js"></script>
+    <script src="navbar.js" defer></script>
+    <style>
+        /* Shop Specific Styles */
+        .shop-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            margin-top: 40px;
+            margin-bottom: 80px;
+        }
+
+        /* Sidebar Filters */
+        .shop-sidebar {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .filter-section {
+            margin-bottom: 30px;
+        }
+
+        .filter-section h4 {
+            font-size: 16px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-item {
+            padding: 8px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .category-item:hover, .category-item.active {
+            color: var(--primary-orange);
+        }
+
+        .brand-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .brand-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .brand-item input {
+            accent-color: var(--primary-orange);
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        /* Product Card */
+        .product-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-premium);
+            border-color: var(--primary-orange);
+        }
+
+        .product-image-box {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+            background: #f8f8f8;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-orange);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 900;
+            z-index: 5;
+        }
+
+        .compare-checkbox {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.9);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .product-info {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-brand {
+            font-size: 12px;
+            color: var(--primary-orange);
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .product-name {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--text-black);
+        }
+
+        .product-spec {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            background: var(--bg-light);
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .product-price {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--primary-orange);
+            margin-bottom: 15px;
+            margin-top: auto;
+        }
+
+        /* Skeleton Loading */
+        .skeleton-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .skeleton-img { height: 220px; background: #eee; }
+        .skeleton-line { height: 15px; background: #eee; margin: 15px 20px; border-radius: 4px; }
+        .skeleton-line.short { width: 40%; }
+        .skeleton-line.mid { width: 70%; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .shop-layout {
+                grid-template-columns: 1fr;
+            }
+            .shop-sidebar {
+                display: none; /* Mobile will use a different approach or collapsible */
+            }
+            .shop-sidebar.mobile-visible {
+                display: block;
+                position: fixed;
+                inset: 0;
+                z-index: 2000;
+                border-radius: 0;
+            }
+        }
+
+        /* Mobile Sticky Categories */
+        .mobile-categories {
+            display: none;
+            position: sticky;
+            top: 70px;
+            z-index: 900;
+            background: white;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        @media (max-width: 1024px) {
+            .mobile-categories { display: flex; gap: 10px; padding: 10px 20px; }
+        }
+        .mobile-cat-btn {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .mobile-cat-btn.active {
+            background: var(--primary-orange);
+            color: white;
+            border-color: var(--primary-orange);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            outline: none;
+            font-family: inherit;
+            font-weight: 700;
+        }
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar"></nav>
+
+    <!-- Shop Header -->
+    <header style="background: var(--text-black); color: white; padding: 60px 0; text-align: center;">
+        <div class="container">
+            <h1 style="font-size: 36px; font-weight: 900; margin-bottom: 10px;">متجر المعدات الاحترافية</h1>
+            <p style="opacity: 0.7; font-size: 16px;">أفضل الأدوات من الماركات العالمية بضمان الجودة</p>
+        </div>
+    </header>
+
+    <!-- Mobile Sticky Categories -->
+    <div class="mobile-categories">
+        <button class="mobile-cat-btn active" onclick="setCategory('')">الكل</button>
+        <button class="mobile-cat-btn" onclick="setCategory('power')">أدوات كهربائية</button>
+        <button class="mobile-cat-btn" onclick="setCategory('hand')">أدوات يدوية</button>
+        <button class="mobile-cat-btn" onclick="setCategory('measurement')">قياس</button>
+        <button class="mobile-cat-btn" onclick="setCategory('safety')">سلامة</button>
+    </div>
+
+    <main class="container">
+        <div class="shop-layout">
+            <!-- Sidebar -->
+            <aside class="shop-sidebar">
+                <div class="search-box">
+                    <input type="text" id="toolSearch" placeholder="ابحث عن أداة..." onkeyup="handleSearch()">
+                    <i class="ri-search-line"></i>
+                </div>
+
+                <div class="filter-section">
+                    <h4><i class="ri-function-line"></i> الفئات</h4>
+                    <ul class="category-list">
+                        <li class="category-item active" onclick="setCategory('')">الكل</li>
+                        <li class="category-item" onclick="setCategory('power')">أدوات كهربائية</li>
+                        <li class="category-item" onclick="setCategory('hand')">أدوات يدوية</li>
+                        <li class="category-item" onclick="setCategory('measurement')">أجهزة القياس</li>
+                        <li class="category-item" onclick="setCategory('safety')">معدات السلامة</li>
+                    </ul>
+                </div>
+
+                <div class="filter-section">
+                    <h4><i class="ri-price-tag-3-line"></i> الماركة</h4>
+                    <div class="brand-list">
+                        <label class="brand-item"><input type="checkbox" value="bosch" onchange="handleBrandChange(this)"> Bosch</label>
+                        <label class="brand-item"><input type="checkbox" value="makita" onchange="handleBrandChange(this)"> Makita</label>
+                        <label class="brand-item"><input type="checkbox" value="ingco" onchange="handleBrandChange(this)"> Ingco</label>
+                        <label class="brand-item"><input type="checkbox" value="stanley" onchange="handleBrandChange(this)"> Stanley</label>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h4><i class="ri-money-dollar-circle-line"></i> السعر (درهم)</h4>
+                    <input type="range" id="priceRange" min="0" max="5000" step="100" style="width:100%; accent-color:var(--primary-orange);" oninput="handlePriceRange(this)">
+                    <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-top:10px;">
+                        <span>0 درهم</span>
+                        <span id="priceVal">5000 درهم</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Listing -->
+            <section>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+                    <h2 id="resultsTitle" style="font-size:18px; font-weight:900;">جميع المنتجات</h2>
+                    <span id="resultsCount" class="text-muted" style="font-size:13px; font-weight:700;">6 منتجات</span>
+                </div>
+
+                <div class="product-grid" id="productGrid">
+                    <!-- Skeletons will appear here initially -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer style="background: #0F172A; color: white; padding: 60px 0 40px; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div class="container" style="text-align: center;">
+            <a href="index.html" class="logo" style="color: white; margin-bottom: 20px; justify-content: center;">HRFA<span class="text-orange">.MA</span></a>
+            <p style="opacity: 0.5; font-size: 13px;">&copy; 2024 HRFA.MA - جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    <script>
+        let currentFilters = {
+            category: '',
+            brand: '',
+            q: '',
+            maxPrice: 5000
+        };
+
+        async function loadProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = Array(6).fill(0).map(() => `
+                <div class="skeleton-card">
+                    <div class="skeleton-img"></div>
+                    <div class="skeleton-line short"></div>
+                    <div class="skeleton-line mid"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+            `).join('');
+
+            try {
+                const response = await api.getTools(currentFilters);
+                if (response.success) {
+                    renderProducts(response.data);
+                }
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = '<p>حدث خطأ أثناء تحميل المنتجات.</p>';
+            }
+        }
+
+        function renderProducts(products) {
+            const grid = document.getElementById('productGrid');
+            const count = document.getElementById('resultsCount');
+            
+            count.textContent = `${products.length} من المنتجات`;
+
+            if (products.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align:center; padding: 60px 0;">
+                        <i class="ri-search-eye-line" style="font-size: 60px; color: #ddd; display:block; margin-bottom:20px;"></i>
+                        <h3 style="font-weight:900;">لم نجد أي منتجات تطابق بحثك</h3>
+                        <p class="text-muted">جرب كلمات دلالية أخرى أو تغيير الفلاتر</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = products.map(p => `
+                <div class="product-card">
+                    ${p.badge ? `<div class="product-badge">${p.badge}</div>` : ''}
+                    <label class="compare-checkbox">
+                        <input type="checkbox"> مقارنة
+                    </label>
+                    <div class="product-image-box">
+                        <img src="${p.image}" class="product-image" alt="${p.name}">
+                    </div>
+                    <div class="product-info">
+                        <span class="product-brand">${p.brand}</span>
+                        <h3 class="product-name">${p.name}</h3>
+                        <span class="product-spec">${p.spec}</span>
+                        <div class="product-price">${p.price} درهم</div>
+                        <a href="product-detail.html?id=${p.id}" class="btn btn-primary w-full" style="text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px;">
+                            عرض التفاصيل <i class="ri-eye-line"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleSearch() {
+            currentFilters.q = document.getElementById('toolSearch').value;
+            loadProducts();
+        }
+
+        function setCategory(cat) {
+            currentFilters.category = cat;
+            
+            // Update UI Active States
+            document.querySelectorAll('.category-item').forEach(el => {
+                el.classList.toggle('active', el.textContent.includes(cat) || (cat === '' && el.textContent === 'الكل'));
+            });
+            document.querySelectorAll('.mobile-cat-btn').forEach(el => {
+                el.classList.toggle('active', el.onclick.toString().includes(cat));
+            });
+
+            loadProducts();
+        }
+
+        function handleBrandChange(checkbox) {
+            const checked = document.querySelectorAll('.brand-list input:checked');
+            if (checked.length > 0) {
+                currentFilters.brand = checkbox.value; // Simplification: pick the last one
+            } else {
+                currentFilters.brand = '';
+            }
+            loadProducts();
+        }
+
+        function handlePriceRange(range) {
+            document.getElementById('priceVal').textContent = `${range.value} درهم`;
+            currentFilters.maxPrice = parseInt(range.value);
+            loadProducts();
+        }
+
+        function buyOnWhatsApp(toolName) {
+            const phone = "212783086770";
+            const text = encodeURIComponent(`السلام عليكم، أنا مهتم بشراء ${toolName} من موقع HRFA.MA. هل المنتج متوفر؟`);
+            window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+        }
+
+        window.onload = loadProducts;
+    </script>
+</body>
+
+</html>

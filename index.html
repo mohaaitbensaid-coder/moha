@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRFA.MA | منصتك الموثوقة لخدمات الصيانة والمنزل</title>
+    <link rel="icon" type="image/jpeg" href="logo.png.jpeg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Remix Icons (Stable) -->
+    <!-- Remix Icons (Official High-Frequency CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+    <script src="navbar.js" defer></script>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar"></nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>ابحث عن <span>محترف موثوق</span><br>لكل احتياجاتك المنزلية</h1>
+            <p>من السباكة والكهرباء إلى النجارة والألمنيوم، نربطك بأفضل الحرفيين في منطقتك بضغطة زر واحدة.</p>
+
+            <!-- Main Search Bar -->
+            <div class="hero-search-container">
+                <div class="search-input-group">
+                    <div class="border-beam-container"></div>
+                    <select id="heroCategory">
+                        <option value="">نوع الحرفة</option>
+                        <option value="electricity">الكهرباء</option>
+                        <option value="plumbing">السباكة</option>
+                        <option value="carpentry">النجارة</option>
+                        <option value="painting">الصباغة</option>
+                        <option value="masonry">البناء</option>
+                        <option value="cleaning">التنظيف</option>
+                        <option value="aluminium">الألمنيوم</option>
+                        <option value="appliances">إلكترومنزلية</option>
+                        <option value="transport">النقل</option>
+                        <option value="air-conditioning">التكييف</option>
+                    </select>
+                    <i class="ri-tools-fill"></i>
+                </div>
+                <div class="search-input-group">
+                    <div class="border-beam-container"></div>
+                    <select id="heroCity">
+                        <option value="">اختر المدينة</option>
+                        <option value="casablanca">الدار البيضاء</option>
+                        <option value="rabat">الرباط</option>
+                        <option value="marrakech">مراكش</option>
+                        <option value="tangier">طنجة</option>
+                        <option value="agadir">أكادير</option>
+                        <option value="fes">فاس</option>
+                        <option value="taroudant">تارودانت</option>
+                    </select>
+                    <i class="ri-map-pin-2-fill"></i>
+                </div>
+                <button class="btn btn-primary" style="padding: 12px 35px; min-width: 160px;"
+                    onclick="handleHeroSearch()">
+                    ابحث الآن <i class="ri-search-line"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section id="services" class="section">
+        <div class="container">
+            <div class="section-title">
+                <h2>خدمات احترافية بين يديك</h2>
+                <p class="text-muted">اختر التخصص الذي تحتاجه وتصفح قائمة الحرفيين الموثقين</p>
+            </div>
+
+            <div class="services-grid" style="direction: rtl;">
+                <!-- 10 Categories -->
+                <div class="service-card" onclick="filterByCategory('electricity')">
+                    <div class="service-icon"><i class="ri-flashlight-line"></i></div>
+                    <h3>الكهرباء</h3>
+                    <p class="text-muted">صيانة الأعطال وتركيب الإضاءة.</p>
+                </div>
+
+                <div class="service-card" onclick="filterByCategory('plumbing')">
+                    <div class="service-icon"><i class="ri-drop-line"></i></div>
+                    <h3>السباكة</h3>
+                    <p class="text-muted">سلول التسربات وتركيب القنوات.</p>
+                </div>
+
+                <div class="service-card" onclick="filterByCategory('carpentry')">
+                    <div class="service-icon"><i class="ri-tools-line"></i></div>
+                    <h3>النجارة</h3>
+                    <p class="text-muted">إصلاح الأثاث وتركيب الأبواب.</p>
+                </div>
+
+                <div class="service-card" onclick="filterByCategory('painting')">
+                    <div class="service-icon"><i class="ri-brush-3-line"></i></div>
+                    <h3>الدهان</h3>
+                    <p class="text-muted">صباغة الجدران والديكور الحديث.</p>
+                </div>
+
+                <div class="service-card" onclick="filterByCategory('masonry')">
+                    <div class="service-icon"><i class="ri-building-line"></i></div>
+                    <h3>البناء</h3>
+                    <p class="text-muted">إصلاحات هيكلية وبناء عصري.</p>
+                </div>
+
+                <div class="service-card" onclick="filterByCategory('aluminium')">
+                    <div class="service-icon"><i class="ri-window-2-line"></i></div>
+                    <h3>الألمنيوم</h3>
+                    <p class="text-muted">تركيب وإصلاح النوافذ والأبواب.</p>
+                </div>
+
+                <div class="service-card" onclick="filterByCategory('cleaning')">
+                    <div class="service-icon"><i class="ri-brush-line"></i></div>
+                    <h3>التنظيف</h3>
+                    <p class="text-muted">تنظيف شامل للمنازل والمكاتب.</p>
+                </div>
+
+                <div class="service-card" onclick="filterByCategory('appliances')">
+                    <div class="service-icon"><i class="ri-fridge-line"></i></div>
+                    <h3>إلكترومنزلية</h3>
+                    <p class="text-muted">إصلاح الثلاجات والغسالات.</p>
+                </div>
+
+                <div class="service-card" onclick="filterByCategory('transport')">
+                    <div class="service-icon"><i class="ri-truck-line"></i></div>
+                    <h3>النقل</h3>
+                    <p class="text-muted">نقل الأثاث والبضائع بأمان وسرعة.</p>
+                </div>
+
+                <div class="service-card" onclick="filterByCategory('air-conditioning')">
+                    <div class="service-icon"><i class="ri-windy-line"></i></div>
+                    <h3>التكييف</h3>
+                    <p class="text-muted">تركيب وصيانة أجهزة التكييف والتهوية.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="section" style="background: #F8FAFC;">
+        <div class="container">
+            <div class="section-title">
+                <h2>كيف يعمل <span class="text-orange">HRFA.MA</span>؟</h2>
+                <p>ثلاث خطوات بسيطة للحصول على أفضل خدمة</p>
+            </div>
+
+            <div class="how-it-works-grid">
+                <div class="text-center">
+                    <div
+                        style="width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: var(--shadow-soft); font-size: 32px; color: var(--primary-orange);">
+                        <i class="ri-search-2-line"></i>
+                    </div>
+                    <h3 style="font-weight: 800; margin-bottom: 15px;">1. ابحث</h3>
+                    <p class="text-muted">اختر الحرفة والمدينة وتصفح ملفات الحرفيين الموثقين.</p>
+                </div>
+
+                <div class="text-center">
+                    <div
+                        style="width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: var(--shadow-soft); font-size: 32px; color: var(--primary-orange);">
+                        <i class="ri-chat-3-line"></i>
+                    </div>
+                    <h3 style="font-weight: 800; margin-bottom: 15px;">2. تواصل</h3>
+                    <p class="text-muted">دردش مع الحرفي مباشرة لشرح طلبك وتحديد موعد.</p>
+                </div>
+
+                <div class="text-center">
+                    <div
+                        style="width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: var(--shadow-soft); font-size: 32px; color: var(--primary-orange);">
+                        <i class="ri-star-line"></i>
+                    </div>
+                    <h3 style="font-weight: 800; margin-bottom: 15px;">3. قيّم</h3>
+                    <p class="text-muted">بعد انتهاء العمل، شارك تجربتك لمساعدة الزبناء الآخرين.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section id="why-us" class="section" style="background: #0F172A; color: white;">
+        <div class="container">
+            <div class="why-us-grid">
+                <div style="border-radius: 30px; overflow: hidden; box-shadow: var(--shadow-premium);">
+                    <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800" alt="Work"
+                        style="width: 100%; display: block;">
+                </div>
+                <div>
+                    <h2 style="font-size: 42px; font-weight: 900; margin-bottom: 24px;">لماذا تختار <span
+                            class="text-orange">HRFA.MA</span>؟</h2>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 24px;">
+                        <li style="display: flex; gap: 15px;">
+                            <div
+                                style="width:40px; height:40px; background:var(--primary-orange-mid); color:var(--primary-orange); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                <i class="ri-shield-check-line" style="font-size: 24px;"></i>
+                            </div>
+                            <div>
+                                <h4 style="font-weight: 800; font-size: 18px;">حرفيين موثقين</h4>
+                                <p style="opacity:0.7;">كل شريك يتم التحقق من هويته ومن جودة أعماله السابقة.</p>
+                            </div>
+                        </li>
+                        <li style="display: flex; gap: 15px;">
+                            <div
+                                style="width:40px; height:40px; background:var(--primary-orange-mid); color:var(--primary-orange); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                <i class="ri-customer-service-2-line" style="font-size: 24px;"></i>
+                            </div>
+                            <div>
+                                <h4 style="font-weight: 800; font-size: 18px;">دعم متواصل</h4>
+                                <p style="opacity:0.7;">نحن معك دائماً لضمان سير العمل بكل احترافية.</p>
+                            </div>
+                        </li>
+                        <li style="display: flex; gap: 15px;">
+                            <div
+                                style="width:40px; height:40px; background:rgba(255,69,0,0.1); color:var(--primary-orange); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                <i class="ri-checkbox-circle-line" style="font-size: 24px;"></i>
+                            </div>
+                            <div>
+                                <h4 style="font-weight: 800; font-size: 18px;">ضمان الجودة</h4>
+                                <p style="opacity:0.7;">نحرص على اختيار الأفضل لتقديم خدمات تليق بتطلعاتكم.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer
+        style="background: #0F172A; color: white; padding: 80px 0 40px; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a href="index.html" class="logo"
+                        style="color: white; margin-bottom: 24px;">HRFA<span
+                            class="text-orange">.MA</span></a>
+                    <p style="opacity: 0.7; font-size: 14px;">المنصة الأولى في المغرب لربط الحرفيين بالزبائن بجودة
+                        واحترافية عالية.</p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 24px; font-weight: 800;">روابط هامة</h4>
+                    <ul
+                        style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px; opacity: 0.8;">
+                        <li><a href="faq.html">الأسئلة الشائعة</a></li>
+                        <li><a href="contact.html">تواصل معنا</a></li>
+                        <li><a href="terms.html">الشروط والأحكام</a></li>
+                        <li><a href="privacy.html">سياسة الخصوصية</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 24px; font-weight: 800;">للحرفيين</h4>
+                    <ul
+                        style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px; opacity: 0.8;">
+                        <li><a href="register.html">انضم كحرفي</a></li>
+                        <li><a href="login.html">لوحة التحكم</a></li>
+                        <li><a href="faq.html#how-to-join">كيفية التسجيل</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 24px; font-weight: 800;">تابعنا</h4>
+                    <div style="display: flex; gap: 15px; font-size: 24px;">
+                        <a href="#" style="color: white; opacity: 0.8;"><i class="ri-facebook-box-fill"></i></a>
+                        <a href="#" style="color: white; opacity: 0.8;"><i class="ri-instagram-fill"></i></a>
+                        <a href="https://wa.me/212783086770" target="_blank" style="color: white; opacity: 0.8;"><i
+                                class="ri-whatsapp-fill"></i></a>
+                        <a href="#" style="color: white; opacity: 0.8;"><i class="ri-linkedin-box-fill"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div
+                style="text-align: center; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 14px; opacity: 0.6;">
+                <p>&copy; 2024 HRFA.MA - جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function handleHeroSearch() {
+            const city = document.getElementById('heroCity').value;
+            const category = document.getElementById('heroCategory').value;
+            let url = 'artisans.html?';
+            const params = [];
+            if (city) params.push(`city=${city}`);
+            if (category) params.push(`category=${category}`);
+            window.location.href = url + params.join('&');
+        }
+
+        function filterByCategory(cat) {
+            window.location.href = `artisans.html?category=${cat}`;
+        }
+    </script>
+</body>
+
+</html>

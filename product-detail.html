@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج | HRFA.MA</title>
+    <link rel="icon" type="image/jpeg" href="logo.png.jpeg">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script>
+        // Check Access: Only for Artisans
+        const authUser = JSON.parse(localStorage.getItem('hrfa_user') || 'null');
+        const authToken = localStorage.getItem('hrfa_token');
+        if (!authUser || !authToken || authUser.role !== 'artisan') {
+            alert('عذراً، هذا القسم خاص بالحرفيين فقط.');
+            window.location.href = 'login.html';
+        }
+    </script>
+    <script src="api.js"></script>
+    <script src="navbar.js" defer></script>
+    <style>
+        .product-detail-container {
+            margin-top: 50px;
+            margin-bottom: 80px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 50px;
+            background: white;
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .product-gallery {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .main-image-box {
+            width: 100%;
+            height: 450px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: #f8f8f8;
+            border: 1px solid var(--border-color);
+        }
+
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .badge-premium {
+            background: var(--primary-orange-light);
+            color: var(--primary-orange);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 800;
+            width: fit-content;
+        }
+
+        .product-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--text-black);
+            line-height: 1.2;
+        }
+
+        .brand-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-muted);
+        }
+
+        .price-tag {
+            font-size: 38px;
+            font-weight: 900;
+            color: var(--primary-orange);
+            margin: 10px 0;
+        }
+
+        .description-box {
+            background: var(--bg-light);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .description-box h4 {
+            margin-bottom: 12px;
+            font-weight: 900;
+        }
+
+        .spec-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .spec-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .spec-item i {
+            color: var(--primary-orange);
+            font-size: 18px;
+        }
+
+        .action-box {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-order {
+            flex: 1;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* Order Modal */
+        .order-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .order-modal {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow-premium);
+            animation: modalSlideUp 0.3s ease;
+        }
+
+        @keyframes modalSlideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 800;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: 700;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--primary-orange);
+            background: var(--primary-orange-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+                padding: 20px;
+                gap: 30px;
+            }
+            .main-image-box {
+                height: 300px;
+            }
+            .product-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar"></nav>
+
+    <main class="container">
+        <!-- Back Link -->
+        <a href="shop.html" style="display: inline-flex; align-items: center; gap: 8px; margin-top: 30px; font-weight: 800; color: var(--text-muted);">
+            <i class="ri-arrow-right-line"></i> العودة للمتجر
+        </a>
+
+        <div id="productDetail" class="product-detail-container">
+            <!-- Loading State -->
+            <div style="grid-column: 1/-1; text-align: center; padding: 100px 0;">
+                <div class="loading-spinner" style="margin: 0 auto 20px;"></div>
+                <p style="font-weight: 800; color: var(--text-muted);">جاري تحميل تفاصيل المنتج...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Order Modal -->
+    <div id="orderModalOverlay" class="order-modal-overlay">
+        <div class="order-modal">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+                <h3 style="font-weight:900; font-size:20px;">تأكيد معلومات الطلب</h3>
+                <i class="ri-close-line" onclick="closeOrderModal()" style="cursor:pointer; font-size:24px; color:var(--text-muted);"></i>
+            </div>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="orderFullName" placeholder="الاسم الكامل" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="tel" id="orderPhone" placeholder="06XXXXXXXX" required>
+                </div>
+                <div class="form-group">
+                    <label>العنوان الكامل (المدينة والحي)</label>
+                    <textarea id="orderAddress" rows="3" placeholder="أدخل عنوانك بالتفصيل لتسهيل التوصيل" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-full" style="padding:15px; font-size:16px; font-weight:800;">
+                    تأكيد الطلب عبر الواتساب <i class="ri-whatsapp-line"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer style="background: #0F172A; color: white; padding: 60px 0 40px; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div class="container" style="text-align: center;">
+            <a href="index.html" class="logo" style="color: white; margin-bottom: 20px; justify-content: center;">HRFA<span class="text-orange">.MA</span></a>
+            <p style="opacity: 0.5; font-size: 13px;">&copy; 2024 HRFA.MA - جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    <script>
+        async function loadProductDetail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            const container = document.getElementById('productDetail');
+
+            if (!productId) {
+                window.location.href = 'shop.html';
+                return;
+            }
+
+            try {
+                const response = await api.getToolById(productId);
+                if (response.success && response.data) {
+                    const p = response.data;
+                    document.title = `${p.name} | HRFA.MA`;
+                    
+                    container.innerHTML = `
+                        <div class="product-gallery">
+                            <div class="main-image-box">
+                                <img src="${p.image}" class="main-image" alt="${p.name}">
+                            </div>
+                        </div>
+                        <div class="product-meta">
+                            <div class="badge-premium">${p.categoryLabel}</div>
+                            <h1 class="product-title">${p.name}</h1>
+                            <div class="brand-pill">
+                                <i class="ri-shield-check-fill" style="color:#10B981;"></i>
+                                ماركة أصلية: <span>${p.brand}</span>
+                            </div>
+                            
+                            <div class="price-tag">${p.price} درهم</div>
+
+                            <div class="description-box">
+                                <h4>الوصف والمميزات</h4>
+                                <p style="font-size: 15px; color: var(--text-dark); line-height: 1.8;">
+                                    ${p.description}
+                                </p>
+                                
+                                <div class="spec-grid">
+                                    <div class="spec-item"><i class="ri-settings-line"></i> المواصفات: ${p.spec}</div>
+                                    <div class="spec-item"><i class="ri-truck-line"></i> توصيل سريع (24-48 ساعة)</div>
+                                    <div class="spec-item"><i class="ri-checkbox-circle-line"></i> ضمان لمدة سنة</div>
+                                    <div class="spec-item"><i class="ri-wallet-line"></i> الدفع عند الاستلام</div>
+                                </div>
+                            </div>
+
+                            <div class="action-box">
+                                <button class="btn btn-primary btn-order" onclick="openOrderModal('${p.name}')">
+                                    <i class="ri-shopping-cart-2-line"></i> اطلب الآن عبر الواتساب
+                                </button>
+                                <button class="btn btn-outline" style="width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center;" onclick="shareProduct('${p.name}')">
+                                    <i class="ri-share-line" style="font-size: 20px;"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 100px 0;">
+                            <i class="ri-error-warning-line" style="font-size: 60px; color: #EF4444; margin-bottom: 20px;"></i>
+                            <h3 style="font-weight: 900;">عذراً، المنتج غير موجود</h3>
+                            <a href="shop.html" class="btn btn-primary" style="margin-top: 20px;">العودة للمتجر</a>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        let activeToolName = '';
+
+        function openOrderModal(toolName) {
+            activeToolName = toolName;
+            const modal = document.getElementById('orderModalOverlay');
+            modal.style.display = 'flex';
+            
+            // Pre-fill from authUser
+            document.getElementById('orderFullName').value = authUser.name || '';
+            document.getElementById('orderPhone').value = authUser.phone || '';
+            document.getElementById('orderAddress').value = authUser.address || '';
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModalOverlay').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('orderModalOverlay');
+            if (event.target === modal) {
+                closeOrderModal();
+            }
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('orderFullName').value;
+            const phone = document.getElementById('orderPhone').value;
+            const address = document.getElementById('orderAddress').value;
+
+            const targetPhone = "212783086770";
+            const message = encodeURIComponent(
+                `السلام عليكم، أريد طلب المنتج التالي: *${activeToolName}*\n\n` +
+                `👤 *الاسم:* ${name}\n` +
+                `📞 *رقم الهاتف:* ${phone}\n` +
+                `📍 *العنوان:* ${address}\n\n` +
+                `يرجى تأكيد استلام الطلب.`
+            );
+            
+            window.open(`https://wa.me/${targetPhone}?text=${message}`, '_blank');
+            closeOrderModal();
+        });
+
+        function shareProduct(name) {
+            if (navigator.share) {
+                navigator.share({
+                    title: name,
+                    url: window.location.href
+                });
+            }
+        }
+
+        window.onload = loadProductDetail;
+    </script>
+</body>
+
+</html>

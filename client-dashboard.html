@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الزبون | HRFA.MA</title>
+    <link rel="icon" type="image/jpeg" href="logo.png.jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .tab-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-icon-box {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .icon-orange {
+            background: #FFF3EE;
+            color: var(--primary-orange);
+        }
+
+        .icon-blue {
+            background: #EFF6FF;
+            color: #3B82F6;
+        }
+
+        .icon-green {
+            background: #ECFDF5;
+            color: #10B981;
+        }
+
+        .booking-item {
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            margin-bottom: 14px;
+            border: 1.5px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .booking-item:hover {
+            border-color: var(--primary-orange);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .status-badge {
+            padding: 4px 14px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .status-pending {
+            background: #FFF7ED;
+            color: #EA580C;
+        }
+
+        .status-accepted {
+            background: #ECFDF5;
+            color: #059669;
+        }
+
+        .status-completed {
+            background: #EFF6FF;
+            color: #2563EB;
+        }
+
+        .status-cancelled {
+            background: #FEF2F2;
+            color: #DC2626;
+        }
+
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-item {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .chat-item:hover {
+            border-color: var(--primary-orange);
+            background: var(--primary-orange-light);
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .chat-name {
+            font-weight: 800;
+            margin-bottom: 3px;
+        }
+
+        .chat-preview {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .chat-time {
+            font-size: 12px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            font-weight: 600;
+            margin-right: auto;
+        }
+
+        .unread-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--primary-orange);
+            flex-shrink: 0;
+        }
+
+        .active-chat {
+            background: var(--primary-orange-light) !important;
+            border-color: var(--primary-orange) !important;
+        }
+
+        .chat-container {
+            display: flex;
+            height: 600px;
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .chat-sidebar {
+            width: 320px;
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #F8FAFC;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background: var(--primary-orange);
+            color: white;
+            border-radius: 20px 20px 2px 20px;
+            box-shadow: 0 4px 12px rgba(255, 69, 0, 0.2);
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background: white;
+            color: var(--text-dark);
+            border-radius: 20px 20px 20px 2px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+        }
+
+        .settings-section h3 {
+            font-size: 17px;
+            font-weight: 900;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .user-avatar-lg {
+            width: 90px;
+            height: 90px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 4px solid var(--bg-light);
+        }
+
+        .empty-placeholder {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-placeholder i {
+            font-size: 56px;
+            color: #E2E8F0;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .empty-placeholder h3 {
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-card {
+            background: white;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 450px;
+            padding: 30px;
+            position: relative;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            font-size: 32px;
+        }
+
+        .star-rating i {
+            cursor: pointer;
+            color: #E2E8F0;
+            transition: var(--transition);
+        }
+
+        .star-rating i.selected {
+            color: #FFB800;
+        }
+
+        /* Toast Notifications */
+        #toastContainer {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: white;
+            color: var(--text-dark);
+            padding: 16px 24px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            min-width: 280px;
+            border-right: 5px solid var(--primary-orange);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast i {
+            font-size: 20px;
+        }
+
+        .toast.success {
+            border-color: #10B981;
+        }
+
+        .toast.error {
+            border-color: #EF4444;
+        }
+
+        .toast.success i {
+            color: #10B981;
+        }
+
+        .toast.error i {
+            color: #EF4444;
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                height: calc(100vh - 120px);
+                position: relative;
+                margin: -20px;
+                border-radius: 0;
+            }
+
+            .chat-sidebar {
+                width: 100% !important;
+                border-left: none !important;
+            }
+
+            .chat-main {
+                position: absolute;
+                inset: 0;
+                z-index: 100;
+                display: none;
+            }
+
+            .chat-main.open {
+                display: flex;
+            }
+
+            .mobile-back-btn {
+                display: flex !important;
+            }
+
+            .settings-section div {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="menu-toggle" id="menuToggle"><i class="ri-menu-3-line"></i></div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">HRFA<span class="text-orange">.MA</span></a>
+            </div>
+            <nav class="nav-menu">
+                <div class="nav-item active" data-tab="tab-overview" onclick="switchTab('tab-overview')">
+                    <i class="ri-home-heart-fill"></i> نظرة عامة
+                </div>
+                <div class="nav-item" data-tab="tab-history" onclick="switchTab('tab-history')">
+                    <i class="ri-history-fill"></i> طلباتي
+                    <span
+                        style="margin-right:auto; background:var(--primary-orange); color:white; border-radius:100px; padding:2px 9px; font-size:11px; font-weight:800;">3</span>
+                </div>
+                <div class="nav-item" data-tab="tab-chat" onclick="switchTab('tab-chat')">
+                    <i class="ri-chat-3-fill"></i> المحادثات
+                    <span
+                        style="margin-right:auto; background:#10B981; color:white; border-radius:100px; padding:2px 9px; font-size:11px; font-weight:800;">2</span>
+                </div>
+                <div class="nav-item" data-tab="tab-settings" onclick="switchTab('tab-settings')">
+                    <i class="ri-user-settings-fill"></i> حسابي
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="artisans.html" class="nav-item" style="color:var(--primary-orange); margin-bottom:8px;">
+                    <i class="ri-search-line"></i> ابحث عن حرفي
+                </a>
+                <a href="login.html" class="nav-item" style="color:#EF4444;" onclick="logout()">
+                    <i class="ri-logout-box-r-line"></i> خروج
+                </a>
+            </div>
+        </aside>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-bottom-nav">
+            <button class="mobile-nav-btn active" id="mbn-overview" onclick="switchTab('tab-overview'); setMobileNav('mbn-overview')">
+                <i class="ri-home-heart-fill"></i>
+                <span>الرئيسية</span>
+            </button>
+            <button class="mobile-nav-btn" id="mbn-history" onclick="switchTab('tab-history'); setMobileNav('mbn-history')">
+                <i class="ri-history-fill"></i>
+                <div class="nav-dot"></div>
+                <span>طلباتي</span>
+            </button>
+            <button class="mobile-nav-btn" id="mbn-chat" onclick="switchTab('tab-chat'); setMobileNav('mbn-chat')">
+                <i class="ri-chat-3-fill"></i>
+                <span>رسائل</span>
+            </button>
+            <button class="mobile-nav-btn" id="mbn-artisans" onclick="window.location.href='artisans.html'">
+                <i class="ri-search-line"></i>
+                <span>حرفيين</span>
+            </button>
+            <button class="mobile-nav-btn" id="mbn-settings" onclick="switchTab('tab-settings'); setMobileNav('mbn-settings')">
+                <i class="ri-user-settings-fill"></i>
+                <span>حسابي</span>
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div>
+                    <h1 style="font-size:22px; font-weight:900;">مرحباً، <span id="userName">الزبون</span></h1>
+                    <p class="text-muted" style="font-size:14px;">نحن هنا لمساعدتك في الحصول على أفضل تجربة صيانة.</p>
+                </div>
+                <div class="header-actions">
+                    <a href="artisans.html" class="btn btn-primary" style="padding:10px 20px; font-size:14px;">
+                        <i class="ri-add-line"></i> طلب جديد
+                    </a>
+                    <div style="width:44px; height:44px; border-radius:50%; background:#3B82F6; color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px;"
+                        id="userInitial">Z</div>
+                </div>
+            </header>
+
+            <!-- TAB: Overview -->
+            <div id="tab-overview" class="tab-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div>
+                            <p class="text-muted" style="font-weight:700; font-size:13px; margin-bottom:6px;">طلبات نشطة
+                            </p>
+                            <div class="stat-num">02</div>
+                        </div>
+                        <div class="stat-icon-box icon-orange"><i class="ri-time-fill"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div>
+                            <p class="text-muted" style="font-weight:700; font-size:13px; margin-bottom:6px;">مكتملة</p>
+                            <div class="stat-num">10</div>
+                        </div>
+                        <div class="stat-icon-box icon-green"><i class="ri-checkbox-circle-fill"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div>
+                            <p class="text-muted" style="font-weight:700; font-size:13px; margin-bottom:6px;">إجمالي
+                                الحجوزات</p>
+                            <div class="stat-num">12</div>
+                        </div>
+                        <div class="stat-icon-box icon-blue"><i class="ri-calendar-fill"></i></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+                        <h2 style="font-size:19px; font-weight:900;">آخر الطلبات</h2>
+                        <button class="btn btn-outline" style="padding:8px 16px; font-size:13px;"
+                            onclick="switchTab('tab-history')">عرض الكل</button>
+                    </div>
+
+                    <div class="booking-item">
+                        <div
+                            style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                            <div style="display:flex; gap:14px; align-items:center;">
+                                <div
+                                    style="width:46px; height:46px; background:var(--bg-light); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--primary-orange); font-size:20px;">
+                                    <i class="ri-flashlight-fill"></i>
+                                </div>
+                                <div>
+                                    <h3 style="font-weight:900; font-size:16px; margin-bottom:2px;">إصلاح عطل كهربائي
+                                    </h3>
+                                    <p class="text-muted" style="font-size:13px;">أحمد العبدلاوي <i
+                                            class="ri-verified-badge-fill" style="color:#3B82F6;"></i></p>
+                                </div>
+                            </div>
+                            <span class="status-badge status-pending">قيد التنفيذ</span>
+                        </div>
+                        <div
+                            style="display:flex; justify-content:space-between; background:white; padding:10px 16px; border-radius:10px; font-size:13px; font-weight:700; border:1px solid var(--border-color);">
+                            <span><i class="ri-calendar-line" style="color:var(--primary-orange);"></i> غداً
+                                18:00</span>
+                            <span class="text-orange">150 درهم</span>
+                        </div>
+                    </div>
+
+                    <div class="booking-item">
+                        <div
+                            style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                            <div style="display:flex; gap:14px; align-items:center;">
+                                <div
+                                    style="width:46px; height:46px; background:#ECFDF5; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#059669; font-size:20px;">
+                                    <i class="ri-drop-fill"></i>
+                                </div>
+                                <div>
+                                    <h3 style="font-weight:900; font-size:16px; margin-bottom:2px;">تسرب مياه حمام</h3>
+                                    <p class="text-muted" style="font-size:13px;">سعيد محمدي <i
+                                            class="ri-verified-badge-fill" style="color:#3B82F6;"></i></p>
+                                </div>
+                            </div>
+                            <span class="status-badge status-completed">مكتمل</span>
+                        </div>
+                        <div
+                            style="display:flex; justify-content:space-between; background:white; padding:10px 16px; border-radius:10px; font-size:13px; font-weight:700; border:1px solid var(--border-color);">
+                            <span><i class="ri-calendar-line" style="color:var(--primary-orange);"></i> 15 مارس
+                                2024</span>
+                            <span class="text-orange">120 درهم</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: History -->
+            <div id="tab-history" class="tab-section">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+                        <h2 style="font-size:19px; font-weight:900;">جميع طلباتي (3)</h2>
+                        <a href="artisans.html" class="btn btn-primary" style="padding:10px 20px; font-size:13px;">
+                            <i class="ri-add-line"></i> طلب جديد
+                        </a>
+                    </div>
+
+                    <div class="booking-item">
+                        <div
+                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <h3 style="font-weight:900;">إصلاح عطل كهربائي</h3>
+                            <span class="status-badge status-pending">قيد التنفيذ</span>
+                        </div>
+                        <p class="text-muted" style="font-size:13px; margin-bottom:10px;">الحرفي: أحمد العبدلاوي | الدار
+                            البيضاء</p>
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn btn-outline" style="flex:1; padding:10px; font-size:13px;"
+                                onclick="openChat('أحمد العبدلاوي', 'https://ui-avatars.com/api/?name=Ahmed+A&background=FF4500&color=fff')"><i
+                                    class="ri-message-3-line"></i>
+                                محادثة</button>
+                            <button class="btn btn-outline" style="flex:1; padding:10px; font-size:13px; color:#EF4444;"
+                                onclick="openCancelModal('إصلاح عطل كهربائي', this)"><i class="ri-close-line"></i>
+                                إلغاء</button>
+                        </div>
+                    </div>
+
+                    <div class="booking-item">
+                        <div
+                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <h3 style="font-weight:900;">تسرب مياه حمام</h3>
+                            <span class="status-badge status-completed">مكتمل ✓</span>
+                        </div>
+                        <p class="text-muted" style="font-size:13px; margin-bottom:10px;">الحرفي: سعيد محمدي | الرباط |
+                            15 مارس 2024</p>
+                        <button class="btn btn-outline" style="padding:10px 20px; font-size:13px;"
+                            onclick="openReviewModal('سعيد محمدي')"><i class="ri-star-line"></i> تقييم الخدمة</button>
+                    </div>
+
+                    <div class="booking-item">
+                        <div
+                            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <h3 style="font-weight:900;">تركيب باب نجارة</h3>
+                            <span class="status-badge status-accepted">مقبول</span>
+                        </div>
+                        <p class="text-muted" style="font-size:13px; margin-bottom:10px;">الحرفي: عمر حميدو | مراكش |
+                            غداً 10:00</p>
+                        <button class="btn btn-outline" style="padding:10px 20px; font-size:13px;"
+                            onclick="openChat('عمر حميدو', 'https://ui-avatars.com/api/?name=Omar+H&background=10B981&color=fff')"><i
+                                class="ri-message-3-line"></i>
+                            محادثة</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Chat -->
+            <div id="tab-chat" class="tab-section">
+                <div class="chat-container">
+                    <div class="chat-sidebar" id="chatInbox">
+                        <div style="padding: 20px; border-bottom: 1px solid var(--border-color); background: white;">
+                            <h2 style="font-size: 18px; font-weight: 900;">المحادثات</h2>
+                        </div>
+                        <div class="chat-list" style="flex: 1; overflow-y: auto; padding: 15px;">
+                            <div class="chat-item active-chat"
+                                onclick="openChat('أحمد العبدلاوي', 'https://ui-avatars.com/api/?name=Ahmed+A&background=FF4500&color=fff')">
+                                <span class="unread-dot"></span>
+                                <img src="https://ui-avatars.com/api/?name=Ahmed+A&background=FF4500&color=fff"
+                                    class="chat-avatar">
+                                <div style="flex: 1; min-width: 0;">
+                                    <div class="chat-name">أحمد العبدلاوي</div>
+                                    <div class="chat-preview">سأكون عندكم غداً إن شاء الله</div>
+                                </div>
+                            </div>
+                            <div class="chat-item"
+                                onclick="openChat('سعيد محمدي', 'https://ui-avatars.com/api/?name=Said+M&background=2563EB&color=fff')">
+                                <img src="https://ui-avatars.com/api/?name=Said+M&background=2563EB&color=fff"
+                                    class="chat-avatar">
+                                <div style="flex: 1; min-width: 0;">
+                                    <div class="chat-name">سعيد محمدي</div>
+                                    <div class="chat-preview">شكراً على التقييم!</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-main" id="chatWindow">
+                        <div id="chatHeader"
+                            style="padding: 15px 25px; background: white; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+                            <div class="mobile-back-btn" onclick="closeChat()">
+                                <i class="ri-arrow-right-line"></i>
+                            </div>
+                            <img id="activeChatAvatar" src="https://ui-avatars.com/api/?name=Ahmed+A"
+                                style="width: 40px; height: 40px; border-radius: 50%;">
+                            <div>
+                                <h3 id="activeChatName" style="font-size: 16px; font-weight: 900;">أحمد العبدلاوي</h3>
+                                <span style="font-size: 11px; color: #10B981; font-weight: 700;">متصل الآن</span>
+                            </div>
+                        </div>
+
+                        <div id="chatMessages"
+                            style="flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
+                            <div class="message received">السلام عليكم، هل يمكننا الحضور غداً غدا لإصلاح العطل؟</div>
+                            <div class="message sent">وعليكم السلام، نعم التوقيت مناسب جداً.</div>
+                            <div class="message received">ممتاز، سأكون عندكم في الساعة 6 مساءً إن شاء الله.</div>
+                        </div>
+
+                        <div
+                            style="padding: 20px; background: white; border-top: 1px solid var(--border-color); display: flex; gap: 10px;">
+                            <input type="text" id="chatInput" placeholder="اكتب رسالتك هنا..."
+                                style="flex: 1; border: 1.5px solid var(--border-color); padding: 12px 20px; border-radius: 100px; outline: none; font-size: 14px;">
+                            <button class="btn btn-primary"
+                                style="width: 45px; height: 45px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;"
+                                onclick="sendMessage()">
+                                <i class="ri-send-plane-2-fill" style="margin-left: 0;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Settings -->
+            <div id="tab-settings" class="tab-section">
+                <div class="card">
+                    <h2 style="font-size:19px; font-weight:900; margin-bottom:24px;">حسابي الشخصي</h2>
+
+                    <div
+                        style="display:flex; gap:20px; align-items:center; margin-bottom:30px; padding:20px; background:var(--bg-light); border-radius:var(--radius-md);">
+                        <div style="position: relative; flex-shrink: 0;">
+                            <img id="settingsAvatar"
+                                src="https://ui-avatars.com/api/?name=Client&background=3B82F6&color=fff&size=200"
+                                class="user-avatar-lg" alt="الصورة الشخصية" style="cursor: pointer;" onclick="document.getElementById('avatarUpload').click()">
+                            <div onclick="document.getElementById('avatarUpload').click()" 
+                                style="position: absolute; bottom: 5px; right: 5px; width: 32px; height: 32px; background: var(--primary-orange); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                                <i class="ri-camera-fill"></i>
+                            </div>
+                            <input type="file" id="avatarUpload" style="display: none;" accept="image/*" onchange="handleAvatarUpload(event)">
+                        </div>
+                        <div>
+                            <h3 id="settingsName" style="font-weight:900; font-size:20px; margin-bottom:4px;">جلال الزبون</h3>
+                            <p id="settingsEmail" class="text-muted" style="font-size:14px;">client@hrfa.ma</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>البيانات الشخصية</h3>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>الاسم الكامل</label>
+                                <input type="text" id="settingsNameInput" value="جلال الزبون">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label>رقم الهاتف</label>
+                                <input type="tel" value="0661234567">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top:16px;">
+                            <label>المدينة</label>
+                            <select>
+                                <option>الدار البيضاء</option>
+                                <option>الرباط</option>
+                                <option>مراكش</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" style="padding:12px 28px;"
+                            onclick="showToast('تم حفظ البيانات بنجاح ✓', 'success')"><i class="ri-save-line"></i> حفظ
+                            التغييرات</button>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>الأمان</h3>
+                        <div class="form-group">
+                            <label>كلمة المرور الحالية</label>
+                            <input type="password" placeholder="••••••••">
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                            <div class="form-group">
+                                <label>كلمة المرور الجديدة</label>
+                                <input type="password" placeholder="••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label>تأكيد كلمة المرور</label>
+                                <input type="password" placeholder="••••••••">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>التنبيهات</h3>
+                        <div
+                            style="display:flex; flex-direction:column; gap:12px; background:white; padding:15px; border-radius:12px; border:1px solid var(--border-color);">
+                            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                                <input type="checkbox" checked style="width:18px; height:18px;">
+                                <span style="font-size:14px; font-weight:700;">تنبيهات حالة الطلب (قبول/إكمال)</span>
+                            </label>
+                            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                                <input type="checkbox" checked style="width:18px; height:18px;">
+                                <span style="font-size:14px; font-weight:700;">تنبيهات الرسائل الجديدة</span>
+                            </label>
+                            <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                                <input type="checkbox" style="width:18px; height:18px;">
+                                <span style="font-size:14px; font-weight:700;">عروض ومستجدات المنصة</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" style="padding:12px 28px; margin-bottom: 30px;"
+                        onclick="showToast('تم حفظ الإعدادات بنجاح ✓', 'success')"><i class="ri-save-line"></i> حفظ جميع
+                        التغييرات</button>
+
+                    <div
+                        style="padding:20px; background:#FEF2F2; border-radius:var(--radius-md); border:1px solid #FECACA;">
+                        <h4 style="color:#DC2626; font-weight:800; margin-bottom:8px;"><i class="ri-alert-line"></i>
+                            منطقة الخطر</h4>
+                        <p style="font-size:13px; color:#991B1B; margin-bottom:14px;">حذف الحساب نهائياً من المنصة. هذا
+                            الإجراء لا يمكن التراجع عنه.</p>
+                        <button class="btn" style="background:#EF4444; color:white; padding:10px 20px; font-size:13px;"
+                            onclick="openActionModal({
+                                title: 'حذف الحساب؟',
+                                desc: 'هل أنت متأكد من حذف حسابك نهائياً؟ هذا الإجراء لا يمكن التراجع عنه.',
+                                icon: 'ri-delete-bin-line',
+                                color: '#EF4444',
+                                bg: '#FEF2F2',
+                                confirmText: 'نعم، حذف الحساب',
+                                confirmAction: () => logout()
+                            })">
+                            <i class="ri-delete-bin-line"></i> حذف الحساب</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <!-- Review Modal -->
+    <div class="modal-overlay" id="reviewModal">
+        <div class="modal-card">
+            <div style="text-align: center;">
+                <div
+                    style="width: 80px; height: 80px; background: #FFF3EE; color: var(--primary-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 20px;">
+                    <i class="ri-star-smile-line"></i>
+                </div>
+                <h2 style="font-weight: 900; margin-bottom: 10px;">كيف كانت خدمتك؟</h2>
+                <p class="text-muted">تقييمك لـ <span id="reviewTargetName"
+                        style="font-weight: 800; color: var(--text-dark);"></span> يساعدنا على تحسين جودة الحرفيين.</p>
+
+                <div class="star-rating" id="starRating">
+                    <i class="ri-star-fill" data-value="1"></i>
+                    <i class="ri-star-fill" data-value="2"></i>
+                    <i class="ri-star-fill" data-value="3"></i>
+                    <i class="ri-star-fill" data-value="4"></i>
+                    <i class="ri-star-fill" data-value="5"></i>
+                </div>
+
+                <textarea id="reviewComment" placeholder="اكتب رأيك هنا... (اختياري)"
+                    style="width: 100%; border: 1.5px solid var(--border-color); border-radius: 16px; padding: 15px; outline: none; font-family: inherit; margin-bottom: 20px; min-height: 100px; resize: none;"></textarea>
+
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-primary" style="flex: 2; padding: 14px;" onclick="submitReview()">إرسال
+                        التقييم</button>
+                    <button class="btn btn-outline" style="flex: 1; padding: 14px;"
+                        onclick="closeAllModals()">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Confirmation Modal -->
+    <div class="modal-overlay" id="cancelModal">
+        <div class="modal-card">
+            <div style="text-align: center;">
+                <div
+                    style="width: 80px; height: 80px; background: #FEF2F2; color: #EF4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 20px;">
+                    <i class="ri-error-warning-line"></i>
+                </div>
+                <h2 style="font-weight: 900; margin-bottom: 10px;">إلغاء الطلب؟</h2>
+                <p class="text-muted">هل أنت متأكد من رغبتك في إلغاء <span id="cancelTargetName"
+                        style="font-weight: 800; color: var(--text-dark);"></span>؟</p>
+
+                <div style="display: flex; gap: 12px; margin-top: 30px;">
+                    <button class="btn"
+                        style="background: #EF4444; color: white; flex: 2; padding: 14px; border-radius: 12px; font-weight: 800;"
+                        onclick="confirmCancel()">نعم، إلغاء الطلب</button>
+                    <button class="btn btn-outline" style="flex: 1; padding: 14px;"
+                        onclick="closeAllModals()">رجوع</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Modal -->
+    <div class="modal-overlay" id="actionModal">
+        <div class="modal-card">
+            <div style="text-align: center;">
+                <div id="modalIconBox"
+                    style="width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 20px;">
+                    <i id="modalIcon" class=""></i>
+                </div>
+                <h2 id="modalTitle" style="font-weight: 900; margin-bottom: 10px;"></h2>
+                <p id="modalDesc" class="text-muted"></p>
+
+                <div style="display: flex; gap: 12px; margin-top: 30px;">
+                    <button id="modalConfirmBtn" class="btn"
+                        style="flex: 2; padding: 14px; border-radius: 12px; font-weight: 800; color: white;"></button>
+                    <button class="btn btn-outline" style="flex: 1; padding: 14px;"
+                        onclick="closeAllModals()">رجوع</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load user info
+        const user = JSON.parse(localStorage.getItem('hrfa_user') || '{}');
+        if (user.name) {
+            document.getElementById('userName').textContent = user.name.split(' ')[0];
+            document.getElementById('settingsName').textContent = user.name;
+            document.getElementById('settingsNameInput').value = user.name;
+            document.getElementById('userInitial').textContent = user.name.charAt(0);
+        }
+        if (user.email) {
+            document.getElementById('settingsEmail').textContent = user.email;
+        }
+        if (user.avatar) {
+            document.getElementById('settingsAvatar').src = user.avatar;
+            if (document.getElementById('navAvatar')) {
+                document.getElementById('navAvatar').src = user.avatar;
+            }
+        }
+
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                document.getElementById('settingsAvatar').src = imageData;
+                
+                // Update global user object and save
+                user.avatar = imageData;
+                localStorage.setItem('hrfa_user', JSON.stringify(user));
+                
+                // If there's a nav avatar, update it too
+                if (document.getElementById('navAvatar')) {
+                    document.getElementById('navAvatar').src = imageData;
+                }
+                
+                showToast('تم تحديث الصورة الشخصية بنجاح ✓', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item[data-tab]').forEach(i => i.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            const navItem = document.querySelector(`[data-tab="${tabId}"]`);
+            if (navItem) navItem.classList.add('active');
+            
+            // Sync URL without refreshing
+            const tabName = tabId.replace('tab-', '');
+            const newUrl = window.location.pathname + '?tab=' + tabName;
+            window.history.pushState({ tab: tabName }, '', newUrl);
+
+            if (window.innerWidth <= 1024) document.getElementById('sidebar').classList.remove('active');
+        }
+
+        function openChat(name, avatar) {
+            switchTab('tab-chat');
+            document.getElementById('activeChatName').textContent = name;
+            document.getElementById('activeChatAvatar').src = avatar;
+
+            // Set some default messages based on the name
+            const messagesContainer = document.getElementById('chatMessages');
+            if (name === 'أحمد العبدلاوي') {
+                messagesContainer.innerHTML = `
+                    <div class="message received">السلام عليكم، هل يمكننا الحضور غداً لإصلاح العطل؟</div>
+                    <div class="message sent">وعليكم السلام، نعم التوقيت مناسب جداً.</div>
+                    <div class="message received">ممتاز، سأكون عندكم في الساعة 6 مساءً إن شاء الله.</div>
+                `;
+            } else if (name === 'سعيد محمدي') {
+                messagesContainer.innerHTML = `
+                    <div class="message received">شكراً جزيلاً على تقييمكم الممتاز!</div>
+                    <div class="message sent">العفو، أنتم تستحقون ذلك نظراً لجودة العمل.</div>
+                `;
+            } else {
+                messagesContainer.innerHTML = `
+                    <div class="message received">مرحباً بك، كيف يمكنني مساعدتك اليوم؟</div>
+                `;
+            }
+
+            // Update active list item
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.remove('active-chat');
+                if (item.querySelector('.chat-name').textContent === name) {
+                    item.classList.add('active-chat');
+                }
+            });
+
+            // Mobile logic
+            if (window.innerWidth <= 768) {
+                document.getElementById('chatWindow').classList.add('open');
+            }
+        }
+
+        function closeChat() {
+            document.getElementById('chatWindow').classList.remove('open');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            if (!input.value.trim()) return;
+
+            const messagesContainer = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = 'message sent';
+            msg.textContent = input.value;
+            messagesContainer.appendChild(msg);
+
+            input.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Fake auto-response for demo
+            setTimeout(() => {
+                const response = document.createElement('div');
+                response.className = 'message received';
+                response.textContent = 'شكراً لك، سأرد عليك في أقرب وقت ممكن.';
+                messagesContainer.appendChild(response);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 1000);
+        }
+
+        document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function logout() {
+            localStorage.removeItem('hrfa_token');
+            localStorage.removeItem('hrfa_user');
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('menuToggle').onclick = () => {
+            document.getElementById('sidebar').classList.add('active');
+            document.getElementById('sidebarOverlay').classList.add('visible');
+        };
+        document.getElementById('sidebarOverlay').onclick = () => {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebarOverlay').classList.remove('visible');
+        };
+        document.body.addEventListener('click', (e) => {
+            if (window.innerWidth <= 1024 && !e.target.closest('#sidebar') && !e.target.closest('#menuToggle') && !e.target.closest('#sidebarOverlay')) {
+                document.getElementById('sidebar').classList.remove('active');
+                document.getElementById('sidebarOverlay').classList.remove('visible');
+            }
+        });
+
+        function setMobileNav(id) {
+            document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id)?.classList.add('active');
+        }
+
+        // Modal Logic
+        let currentRating = 0;
+
+        function openReviewModal(name) {
+            document.getElementById('reviewTargetName').textContent = name;
+            document.getElementById('reviewModal').classList.add('open');
+            resetStars();
+        }
+
+        function openCancelModal(target, btn) {
+            openActionModal({
+                title: 'إلغاء الطلب؟',
+                desc: `هل أنت متأكد من رغبتك في إلغاء ${target}؟ لا يمكن التراجع عن هذا الإجراء.`,
+                icon: 'ri-error-warning-fill',
+                color: '#EF4444',
+                bg: '#FEF2F2',
+                confirmText: 'نعم، إلغاء الطلب',
+                confirmAction: () => {
+                    // Find all instances of this booking across tabs and update them
+                    document.querySelectorAll('.booking-item').forEach(item => {
+                        const h3 = item.querySelector('h3');
+                        if (h3 && h3.textContent.trim() === target.trim()) {
+                            // Update badge
+                            const badge = item.querySelector('.status-badge');
+                            if (badge) {
+                                badge.className = 'status-badge status-cancelled';
+                                badge.textContent = 'تم إلغاء الطلب';
+                            }
+                            
+                            // Replace action buttons if they exist
+                            const actionsDiv = item.querySelector('div[style*="display:flex; gap:10px"]');
+                            if (actionsDiv) {
+                                actionsDiv.innerHTML = '<p class="text-muted" style="font-size:13px; font-weight:700;"><i class="ri-error-warning-fill"></i> تم إلغاء هذا الطلب.</p>';
+                            }
+                        }
+                    });
+                    
+                    showToast('تم إلغاء الطلب بنجاح', 'success');
+                }
+            });
+        }
+
+        function openActionModal(config) {
+            const modal = document.getElementById('actionModal');
+            document.getElementById('modalTitle').textContent = config.title;
+            document.getElementById('modalDesc').textContent = config.desc;
+            document.getElementById('modalIcon').className = config.icon;
+            document.getElementById('modalIconBox').style.color = config.color;
+            document.getElementById('modalIconBox').style.background = config.bg;
+            document.getElementById('modalConfirmBtn').textContent = config.confirmText;
+            document.getElementById('modalConfirmBtn').style.background = config.color;
+
+            document.getElementById('modalConfirmBtn').onclick = () => {
+                config.confirmAction();
+                closeAllModals();
+            };
+
+            modal.classList.add('open');
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+        }
+
+        function resetStars() {
+            currentRating = 0;
+            document.querySelectorAll('.star-rating i').forEach(s => s.classList.remove('selected'));
+        }
+
+        document.querySelectorAll('.star-rating i').forEach(star => {
+            star.onclick = function () {
+                currentRating = parseInt(this.dataset.value);
+                document.querySelectorAll('.star-rating i').forEach(s => {
+                    if (parseInt(s.dataset.value) <= currentRating) {
+                        s.classList.add('selected');
+                    } else {
+                        s.classList.remove('selected');
+                    }
+                });
+            }
+        });
+
+        function submitReview() {
+            if (currentRating === 0) {
+                showToast('الرجاء اختيار التقييم بالنجوم أولاً', 'error');
+                return;
+            }
+
+            // Show success state in modal before closing
+            const modalBody = document.querySelector('#reviewModal .modal-card > div');
+            const originalContent = modalBody.innerHTML;
+
+            modalBody.innerHTML = `
+                <div style="padding: 20px 0; animation: fadeIn 0.4s ease;">
+                    <i class="ri-checkbox-circle-fill" style="font-size: 80px; color: #10B981;"></i>
+                    <h2 style="font-weight: 900; margin-top: 20px;">شكراً لك!</h2>
+                    <p class="text-muted">تم إرسال تقييمك بنجاح ✓</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                closeAllModals();
+                setTimeout(() => {
+                    modalBody.innerHTML = originalContent; // Reset for next time
+                    showToast('تم إرسال التقييم بنجاح', 'success');
+                }, 400);
+            }, 1500);
+        }
+
+        function confirmCancel() {
+            closeAllModals();
+            showToast('تم إلغاء الطلب بنجاح', 'success');
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+
+            const icon = type === 'success' ? 'ri-checkbox-circle-fill' : 'ri-error-warning-fill';
+
+            toast.innerHTML = `
+                <i class="${icon}"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            // Force reflow
+            toast.offsetHeight;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        // Redirect existing alert calls to toasts
+        const originalAlert = window.alert;
+        window.alert = (msg) => showToast(msg, msg.includes('نجاح') ? 'success' : 'info');
+
+        // Initialize state from URL params
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab');
+            if (tab) {
+                switchTab('tab-' + tab);
+                if (tab === 'chat') {
+                    const chatName = params.get('chat');
+                    if (chatName) {
+                        openChat(chatName, `https://ui-avatars.com/api/?name=${chatName.replace(' ', '+')}&background=random&color=fff`);
+                    }
+                }
+            }
+        });
+
+        // Close modal on click outside
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.onclick = (e) => {
+                if (e.target === modal) closeAllModals();
+            }
+        });
+    </script>
+</body>
+
+</html>
